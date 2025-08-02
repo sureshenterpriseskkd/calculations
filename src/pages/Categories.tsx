@@ -95,7 +95,7 @@ export const Categories: React.FC = () => {
     const categoryData = categoryStats.find(c => c.category === selectedCategory);
     
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
           <button
             onClick={() => setSelectedCategory(null)}
@@ -196,9 +196,9 @@ export const Categories: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
           Categories
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
@@ -207,7 +207,7 @@ export const Categories: React.FC = () => {
       </div>
 
       {categoryStats.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 sm:p-8 text-center">
           <p className="text-gray-500 dark:text-gray-400 mb-4">
             No transactions found. Add your first transaction to see categories.
           </p>
@@ -220,31 +220,31 @@ export const Categories: React.FC = () => {
           </a>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {categoryStats.map((category) => (
             <div
               key={category.category}
               onClick={() => setSelectedCategory(category.category)}
-              className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 cursor-pointer hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600"
+              className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 cursor-pointer hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600"
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-900 dark:text-white">
+                <h3 className="font-semibold text-gray-900 dark:text-white truncate pr-2">
                   {category.category}
                 </h3>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+                <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
               </div>
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-green-600 dark:text-green-400">Income</span>
-                  <span className="font-medium text-green-700 dark:text-green-300">
+                  <span className="font-medium text-green-700 dark:text-green-300 text-sm">
                     {formatCurrency(category.income)}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-red-600 dark:text-red-400">Expense</span>
-                  <span className="font-medium text-red-700 dark:text-red-300">
+                  <span className="font-medium text-red-700 dark:text-red-300 text-sm">
                     {formatCurrency(category.expense)}
                   </span>
                 </div>
@@ -255,7 +255,7 @@ export const Categories: React.FC = () => {
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Net
                   </span>
-                  <span className={`font-bold ${
+                  <span className={`font-bold text-sm ${
                     category.total >= 0 
                       ? 'text-blue-600 dark:text-blue-400' 
                       : 'text-red-600 dark:text-red-400'
@@ -266,7 +266,7 @@ export const Categories: React.FC = () => {
 
                 <div className="text-center pt-2">
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {category.count} transactions
+                    {category.count} transaction{category.count !== 1 ? 's' : ''}
                   </span>
                 </div>
               </div>

@@ -1,12 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTransactions } from '../hooks/useTransactions';
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { Chart } from '../components/dashboard/Chart';
 import { TransactionList } from '../components/transactions/TransactionList';
+import { TransactionForm } from '../components/transactions/TransactionForm';
 import { Transaction } from '../types';
 
 export const Dashboard: React.FC = () => {
-  const { transactions, loading } = useTransactions();
+  const { transactions, loading, updateTransaction, deleteTransaction } = useTransactions();
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const stats = useMemo(() => {
     const totalIncome = transactions
@@ -29,6 +31,21 @@ export const Dashboard: React.FC = () => {
     return transactions.slice(0, 5);
   }, [transactions]);
 
+  const handleEdit = (transaction: Transaction) => {
+    setEditingTransaction(transaction);
+  };
+
+  const handleUpdate = async (transactionData: Partial<Transaction>) => {
+    if (editingTransaction) {
+      await updateTransaction(editingTransaction.id, transactionData);
+      setEditingTransaction(null);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteTransaction(id);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-64">
@@ -37,10 +54,33 @@ export const Dashboard: React.FC = () => {
     );
   }
 
+  if (editingTransaction) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="mb-6">
+          <button
+            onClick={() => setEditingTransaction(null)}
+            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium mb-2"
+          >
+            ← Back to Dashboard
+          </button>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Edit Transaction
+          </h1>
+        </div>
+
+        <TransactionForm
+          initialData={editingTransaction}
+          onSubmit={handleUpdate}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         <StatsCard
           title="Total Income"
           amount={stats.totalIncome}
@@ -60,7 +100,7 @@ export const Dashboard: React.FC = () => {
 
       {/* Charts */}
       {transactions.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
           <Chart
             transactions={transactions}
             type="bar"
@@ -76,14 +116,14 @@ export const Dashboard: React.FC = () => {
 
       {/* Recent Transactions */}
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
             Recent Transactions
           </h2>
           {transactions.length > 5 && (
             <a
               href="/categories"
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium self-start sm:self-auto"
             >
               View all
             </a>
@@ -91,8 +131,8 @@ export const Dashboard: React.FC = () => {
         </div>
         <TransactionList
           transactions={recentTransactions}
-          onEdit={() => {}}
-          onDelete={() => {}}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
           showCategory={true}
         />
       </div>

@@ -143,26 +143,43 @@ export const Chart: React.FC<ChartProps> = ({ transactions, type, title }) => {
       legend: {
         position: 'bottom' as const,
         labels: {
-          padding: 20,
+          padding: 15,
           usePointStyle: true,
+          font: {
+            size: 12,
+          },
         },
       },
       title: {
         display: true,
         text: title,
-        padding: 20,
+        padding: { top: 10, bottom: 15 },
         font: {
-          size: 16,
+          size: window.innerWidth < 640 ? 14 : 16,
           weight: 'bold' as const,
         },
       },
     },
     scales: type !== 'doughnut' ? {
+      x: {
+        ticks: {
+          font: {
+            size: window.innerWidth < 640 ? 10 : 12,
+          },
+        },
+      },
       y: {
         beginAtZero: true,
         ticks: {
+          font: {
+            size: window.innerWidth < 640 ? 10 : 12,
+          },
           callback: function(value: any) {
-            return '₹' + new Intl.NumberFormat('en-IN').format(value);
+            const formattedValue = new Intl.NumberFormat('en-IN', {
+              notation: window.innerWidth < 640 ? 'compact' : 'standard',
+              compactDisplay: 'short'
+            }).format(value);
+            return '₹' + formattedValue;
           },
         },
       },
@@ -172,8 +189,8 @@ export const Chart: React.FC<ChartProps> = ({ transactions, type, title }) => {
   const chartData = generateChartData();
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
-      <div className="h-80">
+    <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+      <div className="h-64 sm:h-80">
         {type === 'bar' && <Bar data={chartData} options={options} />}
         {type === 'doughnut' && <Doughnut data={chartData} options={options} />}
         {type === 'line' && <Line data={chartData} options={options} />}
